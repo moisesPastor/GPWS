@@ -1,0 +1,1 @@
+# Graphical word searcher
