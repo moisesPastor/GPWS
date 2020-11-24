@@ -1,5 +1,5 @@
 #################################################################################
-# Copyright 2020, Carlos Peralta Garcia                                         #
+# Copyright 2020, Carlos Peralta Garcia & Moisés Pastor Gadea                   #
 #                                                                               #
 #   Licensed under the Apache License, Version 2.0                              #
 #   you may not use this file except in compliance with the License.            #
@@ -14,8 +14,8 @@
 #   limitations under the License.                                              #
 #                                                                               #
 #   Created on: 06/08/2020                                                      #
-#       Author: Carlos Peralta Garcia                                           #       
-#       Contact: cpega7391@gmail.com                                            #                                           
+#       Authors: Carlos Peralta Garcia & Moisés Pastor Gadea                    #       
+#       Contact: cpega7391@gmail.com  mpastorg@prhlt.upv.es                     #   
 #                                                                               #
 #################################################################################
 
