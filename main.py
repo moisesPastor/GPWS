@@ -224,6 +224,7 @@ class MyWindow(QMainWindow):
                     else:
                         mostrarBuscadas()
                 except KeyError:
+                    restauraGrid(self)
                     var = "No se han encontrado coincidencias de la palabra \"%s\" \nen ningún documento." % (self.ui.inputPalabra.text())
                     self.ui.labelInfo.setStyleSheet("Color: red")
                     self.ui.labelInfo.setText(var)
