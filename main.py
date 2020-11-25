@@ -86,10 +86,10 @@ class MyWindow(QMainWindow):
                 while len(line_idx) > 1:
                     line_idx[0]=line_idx[0].upper()
                     try:
-                        dicProb[line_idx[0]].append([nombreImagenes[i], line_idx[1:7]])
+                        dicProb[line_idx[0]].append([nombreImagenes[i], line_idx[1:8]])
                     except Exception:
                         dicProb[line_idx[0]] = list()
-                        dicProb[line_idx[0]].append([nombreImagenes[i], line_idx[1:7]])
+                        dicProb[line_idx[0]].append([nombreImagenes[i], line_idx[1:8]])
                                               
                     line_idx = file.readline().split(" ")
             
@@ -124,9 +124,8 @@ class MyWindow(QMainWindow):
             y = 0
             for i in range(numImagenesEncontradas):
                 image = QImage(args.pathToImgs + "/" + listMaxProbPage[i][0])
-                        
-                        
-                label_imageDisplay = QLabel()                                              
+                                                
+                label_imageDisplay = QLabel()    
                 label_imageDisplay.setPixmap(QPixmap.fromImage(image).scaled(350, 230)) 
                 self.ui.gridImg.addWidget(label_imageDisplay, x, y)
 
@@ -163,10 +162,10 @@ class MyWindow(QMainWindow):
                 self.ui.barBuscando.setFormat("%d " % int((i+1)*incrementBarra))
                 self.ui.barBuscando.setValue(int((i+1)*incrementBarra))
 
-                self.ui.labelInfo.setText("%d páginas encontradas" % numImagenesEncontradas)
-                self.ui.labelInfo.setStyleSheet("Color: blue")
+                
                                
-
+            self.ui.labelInfo.setText("%d páginas encontradas" % numImagenesEncontradas)
+            self.ui.labelInfo.setStyleSheet("Color: blue")
             self.ui.barBuscando.setVisible(False)   
 
         
@@ -211,12 +210,12 @@ class MyWindow(QMainWindow):
                                     if listMaxProbPage[j][0] == l[i][POS_F_NAME] and float(l[i][1][POS_PROB]) > float(listMaxProbPage[j][1]):
                                         listMaxProbPage[j] = (l[i][POS_F_NAME],float(l[i][1][POS_PROB]))                                   
                                         break
-                                localizaciones[l[i][POS_F_NAME]].append((l[i][1][1],l[i][1][2], l[i][1][3]))
+                                localizaciones[l[i][POS_F_NAME]].append((l[i][1][1], l[i][1][2], l[i][1][3], l[i][1][4]))
                             else:
                                 textoImg.append(l[i][POS_F_NAME])
                                 listMaxProbPage.append((l[i][POS_F_NAME],float(l[i][1][POS_PROB])))
                                 localizaciones[l[i][POS_F_NAME]] = list()
-                                localizaciones[l[i][POS_F_NAME]].append((l[i][1][1],l[i][1][2], l[i][1][3]))
+                                localizaciones[l[i][POS_F_NAME]].append((l[i][1][1], l[i][1][2], l[i][1][3], l[i][1][4]))
 
                     if (len(listMaxProbPage) == 0):
                         var = "%d coincidencias para \"%s\", \nninguna con probabilidad igual o superior a %.6g." % (len(l), self.ui.inputPalabra.text(), prob)
@@ -264,16 +263,17 @@ class MyWindow(QMainWindow):
 
             # pintar localizaciones            
             for i in range(len(localizaciones[pagina])):
-                x = int(localizaciones[pagina][i][0])
-                y = int(localizaciones[pagina][i][1])
-                xLen = int(localizaciones[pagina][i][2])
-                yLen = 20
+                x1 = int(localizaciones[pagina][i][0])
+                y1 = int(localizaciones[pagina][i][1])
+                x2 = int(localizaciones[pagina][i][2])
+                y2 = int(localizaciones[pagina][i][3])
 
                 painterInstance = QPainter(image)
                 penRectangle = QtGui.QPen(QtCore.Qt.green)
                 penRectangle.setWidth(5)
                 painterInstance.setPen(penRectangle)
-                painterInstance.drawLine(x, y+int(yLen/2), x+xLen, y+int(yLen/2))
+                #painterInstance.drawLine(x, y+int(yLen/2), x+xLen, y+int(yLen/2))
+                painterInstance.drawLine(x1, y1, x2, y2)
                 painterInstance.end()
                 
             label_imageDisplay = QLabel()
