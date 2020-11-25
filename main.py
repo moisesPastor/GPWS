@@ -40,7 +40,7 @@ dicProb = {}
 listMaxProbPage = []
 localizaciones = {}
 palabraUsr = ""
-
+prob = -1
 
 class SecondWindow(QDialog):
     def __init__(self):
@@ -171,8 +171,11 @@ class MyWindow(QMainWindow):
         
         def buscar():
             import re
-            global numImagenesEncontradas, textoImg, dicProb, listMaxProbPage, palabraUsr, localizaciones
+            global numImagenesEncontradas, textoImg, dicProb, listMaxProbPage, palabraUsr, localizaciones, prob
 
+            if prob == float(self.ui.inputProb.value()):
+                return
+            
             listMaxProbPage = []
             localizaciones = {}            
             textoImg = []
@@ -318,7 +321,7 @@ class MyWindow(QMainWindow):
         self.ui.botonCreditos.clicked.connect(muestraCreditos)
         self.ui.inputPalabra.returnPressed.connect(buscar)
         self.ui.tipoOrdenacion.currentIndexChanged.connect(mostrarBuscadas)
-
+        self.ui.inputProb.editingFinished.connect(buscar)
 
 if __name__ == "__main__":
     import sys
