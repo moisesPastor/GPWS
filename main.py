@@ -173,7 +173,7 @@ class MyWindow(QMainWindow):
             import re
             global numImagenesEncontradas, textoImg, dicProb, listMaxProbPage, palabraUsr, localizaciones, prob
 
-            if prob == float(self.ui.inputProb.value()):
+            if prob == float(self.ui.inputProb.value()) and palabraUsr == self.ui.inputPalabra.text().upper().strip() :
                 return
             
             listMaxProbPage = []
