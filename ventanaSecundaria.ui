@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>627</width>
-    <height>310</height>
+    <height>335</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -20,26 +20,35 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="1">
-    <widget class="QLabel" name="labelX">
+   <item row="8" column="1">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Escala</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="4">
+    <widget class="QPushButton" name="botonSiguienteIzq">
+     <property name="text">
+      <string>Anterior</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="6">
+    <widget class="QPushButton" name="botonCerrarVentana2">
+     <property name="text">
+      <string>Cerrar</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QLabel" name="labelY">
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3">
-    <widget class="QLabel" name="labelNombreImg">
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="6">
+   <item row="0" column="0" colspan="7">
     <widget class="QScrollArea" name="scrollAreaVentana2">
      <property name="mouseTracking">
       <bool>false</bool>
@@ -53,7 +62,7 @@
         <x>0</x>
         <y>0</y>
         <width>607</width>
-        <height>215</height>
+        <height>284</height>
        </rect>
       </property>
       <property name="mouseTracking">
@@ -62,49 +71,26 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QLabel" name="labelY">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QPushButton" name="botonSiguienteIzq">
-     <property name="text">
-      <string>Anterior</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="5">
-    <widget class="QPushButton" name="botonCerrarVentana2">
-     <property name="text">
-      <string>Cerrar</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
+   <item row="8" column="5">
     <widget class="QPushButton" name="botonSiguienteDer">
      <property name="text">
       <string>Siguiente</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
-    <widget class="QProgressBar" name="barProb">
-     <property name="font">
-      <font>
-       <pointsize>7</pointsize>
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>BlankCursor</cursorShape>
-     </property>
+   <item row="8" column="3">
+    <widget class="QSlider" name="horizontalSlider">
      <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="pageStep">
       <number>1</number>
      </property>
      <property name="value">
-      <number>0</number>
+      <number>50</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>

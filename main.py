@@ -41,13 +41,15 @@ listMaxProbPage = []
 localizaciones = {}
 palabraUsr = ""
 prob = -1
+escala = 1
+size = -1
 
 class SecondWindow(QDialog):
     def __init__(self):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        
+
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -99,15 +101,22 @@ class MyWindow(QMainWindow):
 
         def mostrarBuscadas():
             global listMaxProbPage
-                        
+
+            numImagenesEncontradas = len(listMaxProbPage)
+            if numImagenesEncontradas == 0:
+                return
+            
             #sort listMaxProbPage i localizaciones
             from operator import itemgetter
 
             if self.ui.tipoOrdenacion.currentIndex() == 0:
                 listMaxProbPage.sort(reverse=True,key=itemgetter(1))
             else:
-                listMaxProbPage.sort(key=itemgetter(1))
-                
+                if self.ui.tipoOrdenacion.currentIndex() == 1:
+                    listMaxProbPage.sort(key=itemgetter(1))
+                else:
+                    listMaxProbPage.sort(key=itemgetter(0))
+                    
             restauraGrid(self)
             contador = 0
             
@@ -117,7 +126,7 @@ class MyWindow(QMainWindow):
             self.ui.barBuscando.setValue(contador)
             self.ui.barBuscando.setAlignment(Qt.AlignCenter)
                 
-            numImagenesEncontradas = len(listMaxProbPage)                                          
+                                                     
             incrementBarra = 100.0/numImagenesEncontradas
                     
             x = 0
@@ -234,20 +243,17 @@ class MyWindow(QMainWindow):
                                            
         
         def ventanaImg(indice):
-            global listMaxProbPage, num, palabraUsr #, localizaciones           
-            
-            
+            global listMaxProbPage, num, palabraUsr, image, escala, size #, localizaciones           
+
+            #self.myDialog.ui.horizontalSlider.setProperty("value", 0)
+         
             num=indice
             pagina = listMaxProbPage[indice][0]
-            image = QPixmap(args.pathToImgs + "/" + pagina)           
+            image = QPixmap(args.pathToImgs + "/" + pagina)
+           
 
-            h = image.size().height()
-            w = image.size().width()
-
-            label_imageDisplay = QLabel()
-            label_imageDisplay.setPixmap(image)
-            self.myDialog.ui.scrollAreaVentana2.setWidget(label_imageDisplay)            
-            self.myDialog.resize(w, h)
+             
+            
            
             #-------------------------------------------------------
             n = 1000000
@@ -255,15 +261,8 @@ class MyWindow(QMainWindow):
             if prob > 1: prob = 1
             value = prob * 100
             prob = format(prob, '.12g')
-            self.myDialog.ui.barProb.setMaximum(100 * n)
-            self.myDialog.ui.barProb.setValue(int(value * n))
             value = format(float(prob), '.2f')
-            self.myDialog.ui.barProb.setFormat("%s " % value)
-            self.myDialog.ui.barProb.setAlignment(Qt.AlignCenter)
-            self.myDialog.ui.barProb.setStyleSheet(" QProgressBar { border: 1px solid black; border-radius: 0px; text-align: center; } QProgressBar::chunk {background-color: #3add36; width: 1px;}")
-        
-            self.myDialog.ui.labelNombreImg.clear() 
-            self.myDialog.ui.labelNombreImg.setText("Imagen: %s" % listMaxProbPage[indice][0])
+            self.myDialog.setWindowTitle("Imagen: %s\t\t Prob: %s" % (listMaxProbPage[indice][0], value))
 
             # pintar localizaciones            
             for i in range(len(localizaciones[pagina])):
@@ -279,10 +278,24 @@ class MyWindow(QMainWindow):
                 #painterInstance.drawLine(x, y+int(yLen/2), x+xLen, y+int(yLen/2))
                 painterInstance.drawLine(x1, y1, x2, y2)
                 painterInstance.end()
-                
+
+
+            if size == -1:
+                 h = image.size().height()
+                 w = image.size().width()
+                 size = image.size() * escala
+                 self.myDialog.resize(w, h)
+                 
+            if escala != 1:                
+                image = image.scaled(size)
+                       
+
             label_imageDisplay = QLabel()
             label_imageDisplay.setPixmap(image)
-            self.myDialog.ui.scrollAreaVentana2.setWidget(label_imageDisplay)
+            self.myDialog.ui.scrollAreaVentana2.widget()
+            label_imageDisplay.setAlignment(Qt.AlignCenter)
+            self.myDialog.ui.scrollAreaVentana2.setWidget(label_imageDisplay)          
+                
             self.myDialog.show()
 
 
@@ -313,6 +326,22 @@ class MyWindow(QMainWindow):
             for i in reversed(range(self.ui.gridImg.count())): 
                 self.ui.gridImg.itemAt(i).widget().deleteLater()
 
+        def escalar():
+            global image, escala, size
+
+ #           h = image.size().height()
+ #           w = image.size().width()                
+            
+            escala = self.myDialog.ui.horizontalSlider.value() / 100 + 1            
+            size = image.size() * escala          
+            img_escalada = image.scaled(size)
+
+            label_imageDisplay = QLabel()
+            label_imageDisplay.setPixmap(img_escalada)
+
+            label_imageDisplay.setAlignment(Qt.AlignCenter)
+            self.myDialog.ui.scrollAreaVentana2.setWidget(label_imageDisplay)
+            self.myDialog.show()
             
         self.myDialog.ui.botonCerrarVentana2.clicked.connect(self.myDialog.close)
         self.myDialog.ui.botonSiguienteDer.clicked.connect(siguienteImgDer)
@@ -322,7 +351,8 @@ class MyWindow(QMainWindow):
         self.ui.inputPalabra.returnPressed.connect(buscar)
         self.ui.tipoOrdenacion.currentIndexChanged.connect(mostrarBuscadas)
         self.ui.inputProb.editingFinished.connect(buscar)
-
+        self.myDialog.ui.horizontalSlider.valueChanged.connect(escalar)
+        
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
