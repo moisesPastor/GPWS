@@ -233,6 +233,7 @@ class MyWindow(QMainWindow):
                         var = "%d coincidencias para \"%s\", \nninguna con probabilidad igual o superior a %.6g." % (len(l), self.ui.inputPalabra.text(), prob)
                         self.ui.labelInfo.setStyleSheet("Color: red")
                         self.ui.labelInfo.setText(var)
+                        restauraGrid(self)
                     else:
                         mostrarBuscadas()
                 except KeyError:
@@ -243,17 +244,13 @@ class MyWindow(QMainWindow):
                                            
         
         def ventanaImg(indice):
-            global listMaxProbPage, num, palabraUsr, image, escala, size #, localizaciones           
+            global listMaxProbPage, num, palabraUsr, image_orig, escala, size #, localizaciones           
 
             #self.myDialog.ui.horizontalSlider.setProperty("value", 0)
          
             num=indice
             pagina = listMaxProbPage[indice][0]
-            image = QPixmap(args.pathToImgs + "/" + pagina)
-           
-
-             
-            
+            image_orig = QPixmap(args.pathToImgs + "/" + pagina)                         
            
             #-------------------------------------------------------
             n = 1000000
@@ -271,7 +268,7 @@ class MyWindow(QMainWindow):
                 x2 = int(localizaciones[pagina][i][2])
                 y2 = int(localizaciones[pagina][i][3])
 
-                painterInstance = QPainter(image)
+                painterInstance = QPainter(image_orig)
                 penRectangle = QtGui.QPen(QtCore.Qt.green)
                 penRectangle.setWidth(5)
                 painterInstance.setPen(penRectangle)
@@ -281,13 +278,13 @@ class MyWindow(QMainWindow):
 
 
             if size == -1:
-                 h = image.size().height()
-                 w = image.size().width()
-                 size = image.size() * escala
+                 h = image_orig.size().height()
+                 w = image_orig.size().width()
+                 size = image_orig.size() * escala
                  self.myDialog.resize(w, h)
                  
-            if escala != 1:                
-                image = image.scaled(size)
+            #if escala != 1:                
+            image = image_orig.scaled(size)
                        
 
             label_imageDisplay = QLabel()
@@ -327,14 +324,14 @@ class MyWindow(QMainWindow):
                 self.ui.gridImg.itemAt(i).widget().deleteLater()
 
         def escalar():
-            global image, escala, size
+            global image_orig, escala, size
 
  #           h = image.size().height()
  #           w = image.size().width()                
             
             escala = self.myDialog.ui.horizontalSlider.value() / 100 + 1            
-            size = image.size() * escala          
-            img_escalada = image.scaled(size)
+            size = image_orig.size() * escala          
+            img_escalada = image_orig.scaled(size)
 
             label_imageDisplay = QLabel()
             label_imageDisplay.setPixmap(img_escalada)
