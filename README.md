@@ -1,5 +1,7 @@
 # GraphicalPageImageWordSearcher
 
+   * Libs: PyQt5
+
    * Dowload the Rodrigo book data images and index
      * cd Eggs
      * chmod +x getRodrigo.sh
