@@ -48,6 +48,8 @@ class SecondWindow(QDialog):
     def __init__(self):
         super().__init__()
         self.ui = Ui_Dialog()
+        #self.setWindowFlags(Qt.FramelessWindowHint);
+        self.setWindowFlags(Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)       
         self.ui.setupUi(self)
 
 
