@@ -32,7 +32,6 @@ from PIL import Image
 from argparse import ArgumentParser
 import sys
 
-
 POS_PROB = 0
 POS_F_NAME = 0
 
@@ -41,30 +40,68 @@ listMaxProbPage = []
 localizaciones = {}
 palabraUsr = ""
 prob = -1
-escala = 1
 size = -1
 
+
 class SecondWindow(QDialog):
-    def __init__(self):
+
+    #create a signal
+    weelZoom_SIGNAL = pyqtSignal(int,name='weelZoomSIGNAL')
+    
+    def __init__(self,object):
         super().__init__()
-        self.ui = Ui_Dialog()
+
+        self.isKeyPressed = False
+
         #self.setWindowFlags(Qt.FramelessWindowHint);
-        self.setWindowFlags(Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)       
+        self.setWindowFlags(Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)  
+        
+        self.ui = Ui_Dialog()             
         self.ui.setupUi(self)
-
-
+        self.ui.scrollAreaVentana2.viewport().installEventFilter(self)
+        
+    def keyPressEvent(self, event):
+        if event.modifiers() & Qt.ControlModifier and event.key() == Qt.Key_W:
+            self.isKeyPressed = False
+            self.close()
+        
+        if event.key() == Qt.Key_Control:
+            self.isKeyPressed = True
+                       
+    def keyReleaseEvent(self, event):
+        if event.key() == Qt.Key_Control:
+            self.isKeyPressed = False
+            
+    def wheelEvent(self, event):        
+        if self.isKeyPressed:        
+            if event.angleDelta().y() > 0:
+                zoom = +1
+            else:
+                zoom = -1
+                
+            self.weelZoom_SIGNAL.emit(zoom)
+            event.accept()
+            
+    def eventFilter(self, source, event):
+        if (event.type() == QEvent.Wheel and  self.isKeyPressed == True and source is self.ui.scrollAreaVentana2.viewport()):
+            return True
+        return False
+    
 class MyWindow(QMainWindow):
+    
     def __init__(self):
         global dicProb
         
         super().__init__()
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.ui.barBuscando.setVisible(False)
-        self.myDialog = SecondWindow()
-        self.ui.inputPalabra.setFocus()
+        self.myDialog = SecondWindow(self)
         
+        
+        self.ui.inputPalabra.setFocus()
         parser = ArgumentParser(description='%(prog)s is an word search for page images tool')       
         parser.add_argument('pageList', help='file containing the page list to search')
         parser.add_argument('pathToImgs', help='path to pageImages\'s')
@@ -137,7 +174,8 @@ class MyWindow(QMainWindow):
                 image = QImage(args.pathToImgs + "/" + listMaxProbPage[i][0])
                                                 
                 label_imageDisplay = QLabel()    
-                label_imageDisplay.setPixmap(QPixmap.fromImage(image).scaled(350, 230)) 
+                label_imageDisplay.setPixmap(QPixmap.fromImage(image).scaled(350, 230))
+
                 self.ui.gridImg.addWidget(label_imageDisplay, x, y)
 
                 n = 1000000
@@ -246,10 +284,7 @@ class MyWindow(QMainWindow):
                                            
         
         def ventanaImg(indice):
-            global listMaxProbPage, num, palabraUsr, image_orig, escala, size #, localizaciones           
-
-            #self.myDialog.ui.horizontalSlider.setProperty("value", 0)
-         
+            global listMaxProbPage, num, palabraUsr, image_orig, size          
             num=indice
             pagina = listMaxProbPage[indice][0]
             image_orig = QPixmap(args.pathToImgs + "/" + pagina)                         
@@ -280,12 +315,13 @@ class MyWindow(QMainWindow):
 
 
             if size == -1:
-                 h = image_orig.size().height()
-                 w = image_orig.size().width()
-                 size = image_orig.size() * escala
-                 self.myDialog.resize(w, h)
+                h = image_orig.size().height()
+                w = image_orig.size().width()
                  
-            #if escala != 1:                
+                escala = 1 + self.myDialog.ui.horizontalSlider.value() / 100
+                size = image_orig.size() * escala
+                self.myDialog.resize(w, h)
+                               
             image = image_orig.scaled(size)
                        
 
@@ -315,8 +351,8 @@ class MyWindow(QMainWindow):
             msg.setIcon(QMessageBox.Information)
 
             msg.setWindowTitle("Créditos")
-            msg.setText("Autores:\n\tCarlos Peralta Garcia\n\tMoises Pastor Gadea\nContacto:\n\tcpega7391@gmail.com\n\tmpastorg@prhlt.upv.es")
-            #msg.setText("Autores:\n\tCarlos Peralta Garcia\nContacto:\n\tcpega7391@gmail.com")
+            msg.setText("Autores:\n\tMoises Pastor Gadea\n\tCarlos Peralta Garcia\nContacto:\n\tmpastorg@prhlt.upv.es\n\tcpega7391@gmail.com")
+
             msg.setStandardButtons(QMessageBox.Ok)
             retval = msg.exec_()
 
@@ -326,12 +362,9 @@ class MyWindow(QMainWindow):
                 self.ui.gridImg.itemAt(i).widget().deleteLater()
 
         def escalar():
-            global image_orig, escala, size
+            global image_orig, size
 
- #           h = image.size().height()
- #           w = image.size().width()                
-            
-            escala = self.myDialog.ui.horizontalSlider.value() / 100 + 1            
+            escala = 1 + self.myDialog.ui.horizontalSlider.value() / 100
             size = image_orig.size() * escala          
             img_escalada = image_orig.scaled(size)
 
@@ -340,21 +373,48 @@ class MyWindow(QMainWindow):
 
             label_imageDisplay.setAlignment(Qt.AlignCenter)
             self.myDialog.ui.scrollAreaVentana2.setWidget(label_imageDisplay)
+            #print("-->",self.myDialog.ui.scrollAreaVentana2.value())
+            #print("---> ",self.myDialog.ui.scrollAreaVentana2.verticalScrollBar.value())#setEnabled(False)
             self.myDialog.show()
-            
+
+        def keyPressEvent(self, event):
+            print("W",event)
+            if event.modifiers() & Qt.ControlModifier and event.key() == Qt.Key_W:
+                self.myDialog.close()
+    				    
+                
+    # Slots  #######################
+        def slot_horizontalSlider():
+            escalar()
+
+        def slot_weelZoom_SIGNAL(tam):           
+            bar_value =  self.myDialog.ui.horizontalSlider.value()
+            if tam < 0:
+                bar_value -= 1
+            else:
+                bar_value += 1
+            self.myDialog.ui.horizontalSlider.setValue(bar_value)
+                        
+           
+       
+    # Connections ############################
         self.myDialog.ui.botonCerrarVentana2.clicked.connect(self.myDialog.close)
         self.myDialog.ui.botonSiguienteDer.clicked.connect(siguienteImgDer)
         self.myDialog.ui.botonSiguienteIzq.clicked.connect(siguienteImgIzq)
+        self.myDialog.ui.horizontalSlider.valueChanged.connect(slot_horizontalSlider)
+        self.myDialog.weelZoom_SIGNAL.connect(slot_weelZoom_SIGNAL)
+
         self.ui.botonBuscar.clicked.connect(buscar)
         self.ui.botonCreditos.clicked.connect(muestraCreditos)
         self.ui.inputPalabra.returnPressed.connect(buscar)
         self.ui.tipoOrdenacion.currentIndexChanged.connect(mostrarBuscadas)
         self.ui.inputProb.editingFinished.connect(buscar)
-        self.myDialog.ui.horizontalSlider.valueChanged.connect(escalar)
-        
+ 
 if __name__ == "__main__":
-    import sys
+    import sys  
+    
     app = QtWidgets.QApplication(sys.argv)
     w = MyWindow()
+
     w.show()
     sys.exit(app.exec_())

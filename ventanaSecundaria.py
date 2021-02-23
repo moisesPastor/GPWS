@@ -35,6 +35,7 @@ class Ui_Dialog(object):
         self.scrollAreaVentana2.setMouseTracking(False)
         self.scrollAreaVentana2.setWidgetResizable(True)
         self.scrollAreaVentana2.setObjectName("scrollAreaVentana2")
+                
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 607, 284))
         self.scrollAreaWidgetContents.setMouseTracking(False)
@@ -53,7 +54,10 @@ class Ui_Dialog(object):
         self.horizontalSlider.setProperty("value", 0)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setObjectName("horizontalSlider")
+        #self.horizontalSlider.setTickInterval(25)
+        #self.horizontalSlider.setTickPosition(QtWidgets.QSlider.TicksBelow)
 
+        
 #        self.horizontalSlider_lab = QLabel()
 #        self.horizontalSlider_lab.setText(str(self.horizontalSlider_opt.value())
 #        self.horizontalSlider_lab.setEnabled(False)
