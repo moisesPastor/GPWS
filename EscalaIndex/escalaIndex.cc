@@ -65,9 +65,12 @@ void usage (char * programName){
 
   cerr << "Usage: "<<programName << " options " << endl;
   cerr << "      options:" << endl;
-  cerr << "             -i idexPageName" << endl;
+  cerr << "             -i indexPageName" << endl;
   cerr << "             -x baselinesFileName (XML PAGE format)" << endl;
   cerr << "             -o outputfile " << endl;
+  cerr << "\n     indexPageName format:" << endl;
+  cerr << "         word prob X_pos Y_pos, length_line id_line "<< endl;
+  cerr << "          ie. river 0.8 110 116 125 r0_l23" << endl;
 }
 //----------------------------------------------------------
 int main(int argc,  char ** argv) {
